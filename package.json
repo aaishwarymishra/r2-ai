@@ -10,8 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.8",
     "react": "19.0.0-rc-8b08e99e-20240713",
-    "react-dom": "19.0.0-rc-8b08e99e-20240713"
+    "react-dom": "19.0.0-rc-8b08e99e-20240713",
+    "react-router-dom": "^7.6.2",
+    "tailwindcss": "^4.1.8"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
