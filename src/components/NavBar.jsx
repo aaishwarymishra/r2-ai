@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import logo from "/logo.png";
+import { UserButton, SignedIn } from "@clerk/clerk-react";
 
 const NavBar = () => {
   return (
@@ -12,7 +13,9 @@ const NavBar = () => {
             <span>Lama AI</span>
           </Link>
         </nav>
-        <div>user</div>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
       </header>
       <main className="flex-1 overflow-hidden">
         <Outlet />
