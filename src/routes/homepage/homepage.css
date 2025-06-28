@@ -1,0 +1,13 @@
+.orbital{
+    animation: orbital-spin 100s linear infinite alternate;
+}
+
+@keyframes orbital-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(45deg);
+    }
+    
+}
