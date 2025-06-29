@@ -5,7 +5,7 @@ import { UserButton, SignedIn } from "@clerk/clerk-react";
 
 const NavBar = () => {
   return (
-    <div className="pt-4 pb-4 px-4 h-screen flex flex-col mb-1">
+    <div className="p-3 h-screen flex flex-col mb-1">
       <header className="flex items-center justify-between border-b border-gray-700 p-0.5 pb-3 ">
         <nav>
           <Link to="/" className="flex items-center gap-2 text-1xl font-bold">
@@ -17,7 +17,7 @@ const NavBar = () => {
           <UserButton />
         </SignedIn>
       </header>
-      <main>
+      <main className="h-full flex-1 overflow-y-auto p-4">
         <Outlet />
       </main>
     </div>

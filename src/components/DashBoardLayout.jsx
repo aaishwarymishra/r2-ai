@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
-import { use } from "react";
+import ChatList from "./ChatList";
 
 const DashBoardLayout = () => {
   const { userId, isLoaded } = useAuth();
@@ -14,9 +14,11 @@ const DashBoardLayout = () => {
     }
   }, [userId, isLoaded]);
   return (
-    <div>
-      <div>Menu</div>
-      <div>
+    <div className="flex h-full w-full p-0.5 gap-2.5">
+      <div className="flex-1/6 h-full border-r border-gray-500">
+        <ChatList />
+      </div>
+      <div className="flex-5/6 h-full p-2">
         <Outlet />
       </div>
     </div>
