@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const ChatList = () => {
   return (
-    <div className="flex flex-col gap-2.5 h-[100%] p-2.5 ">
+    <div className="flex flex-col gap-2.5 h-[100%] p-3 ">
       <Link
         to="/dashboard"
         className="text-[16px] hover:text-blue-500 transition-colors hover:bg-gray-600 p-1 rounded"

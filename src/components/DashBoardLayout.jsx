@@ -14,11 +14,11 @@ const DashBoardLayout = () => {
     }
   }, [userId, isLoaded]);
   return (
-    <div className="flex h-full w-full p-0.5 gap-2.5">
+    <div className="flex h-full w-full gap-2.5">
       <div className="flex-1/6 h-full border-r border-gray-500">
         <ChatList />
       </div>
-      <div className="flex-5/6 h-full p-2">
+      <div className="flex-5/6 h-full">
         <Outlet />
       </div>
     </div>
