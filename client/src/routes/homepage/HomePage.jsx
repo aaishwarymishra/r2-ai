@@ -6,11 +6,11 @@ import bot from "/bot.png";
 
 const HomePage = () => {
   return (
-    <div className="flex items-center justify-between gap-20 bg-transparent h-screen p-4">
+    <div className="flex items-center justify-between gap-20 bg-transparent h-full p-4 ">
       <img
         src={orbital}
         alt="background-image"
-        className="absolute bottom-0 left-0 opacity-20 orbital -z-10"
+        className="absolute bottom-0 left-0 opacity-20 orbital -z-10 "
       />
       <div className="flex flex-col items-center justify-center text-center p-4 flex-1/2 gap-4">
         <h1 className="text-9xl bg-linear-to-r from-[#217bfe] to-[#e55571] bg-clip-text text-transparent">

@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useRef } from "react";
+import Input from "../../components/Input";
 
 const ChatPage = () => {
+  const scrollToBottomDiv = useRef(null);
+  useEffect(() => {
+    if (scrollToBottomDiv.current) {
+      scrollToBottomDiv.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
   return (
-    <div className="flex flex-col h-full w-full">
-      <div className="flex-1 overflow-y-auto p-6">
+    <div className="flex flex-col h-full w-full overflow-hidden p-0.5">
+      <div className="flex-1 overflow-y-auto p-6 min-h-0">
         <div className="flex flex-col gap-4 max-w-[75%] mx-auto text-white">
           <div className="from-user max-w-[50%] p-2.5 rounded-2xl bg-gray-800 self-end">
             Hi
@@ -36,8 +44,10 @@ const ChatPage = () => {
           <div className="from-user max-w-[50%] p-2.5 rounded-2xl bg-gray-800 self-end">
             I will. Thanks again!
           </div>
+          <div ref={scrollToBottomDiv}></div>
         </div>
       </div>
+      <Input></Input>
     </div>
   );
 };
