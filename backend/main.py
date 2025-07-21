@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from imagekitio import ImageKit
 import os
 from dotenv import load_dotenv
+from gemini import generate_text
+
 
 load_dotenv()
 
@@ -42,3 +44,25 @@ async def read_root():
             detail = "Failed to authenticate"
         )
 
+@app.post("/api/generate-text")
+async def generate_text_endpoint(prompt: str):
+    if not prompt:
+        raise HTTPException(
+            status_code=400,
+            detail="Prompt cannot be empty."
+        )
+    
+    try:
+        text = await generate_text(prompt)
+        return JSONResponse({"text": text})
+    
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+    except Exception as e:
+        return JSONResponse(
+            {"text": "An error occurred while generating text."}, 
+            status_code=500
+        )

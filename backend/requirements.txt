@@ -4,3 +4,4 @@ pydantic
 pymongo
 imagekitio
 dotenv
+google-genai

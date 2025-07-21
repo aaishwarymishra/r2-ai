@@ -1,14 +1,19 @@
 import React, { useEffect } from "react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Input from "../../components/Input";
+import MarkDown from "react-markdown";
+import "./ChatPage.css"; 
 
 const ChatPage = () => {
+  const [userInput, setUserInput] = useState("");
+  const [modelResponse, setModelResponse] = useState("");
   const scrollToBottomDiv = useRef(null);
   useEffect(() => {
     if (scrollToBottomDiv.current) {
       scrollToBottomDiv.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, []);
+  }, [userInput, modelResponse]);
+
   return (
     <div className="flex flex-col h-full w-full overflow-hidden p-0.5">
       <div className="flex-1 overflow-y-auto p-6 min-h-0">
@@ -44,10 +49,23 @@ const ChatPage = () => {
           <div className="from-user max-w-[50%] p-2.5 rounded-2xl bg-gray-800 self-end">
             I will. Thanks again!
           </div>
+          {userInput && (
+            <div className="from-user max-w-[50%] p-2.5 rounded-2xl bg-gray-800 self-end">
+              {userInput}
+            </div>
+          )}
+          {modelResponse && (
+            <div className="from-bot max-w-[80%] p-2.5 rounded-2xl bg-gray-800 self-start">
+              <MarkDown>{modelResponse}</MarkDown>
+            </div>
+          )}
           <div ref={scrollToBottomDiv}></div>
         </div>
       </div>
-      <Input></Input>
+      <Input
+        setModelResponse={setModelResponse}
+        setUserInput={setUserInput}
+      ></Input>
     </div>
   );
 };
