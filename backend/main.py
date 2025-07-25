@@ -45,15 +45,14 @@ async def read_root():
         )
 
 @app.post("/api/generate-text")
-async def generate_text_endpoint(prompt: str):
+async def generate_text_endpoint(prompt: str,imageUrl: str = None):
     if not prompt:
         raise HTTPException(
             status_code=400,
             detail="Prompt cannot be empty."
         )
-    
     try:
-        text = await generate_text(prompt)
+        text = await generate_text(prompt, ImageUrl=imageUrl)
         return JSONResponse({"text": text})
     
     except RuntimeError as e:

@@ -12,14 +12,17 @@ const Input = ({ setUserInput, setModelResponse }) => {
     }
     setUserInput(text);
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/generate-text?prompt=${encodeURIComponent(
-          text
-        )}`,
-        {
-          method: "POST",
-        }
-      );
+      const url = new URL("http://localhost:3000/api/generate-text");
+      url.searchParams.append("prompt", text);
+      if (uploadedImage.url) {
+        url.searchParams.append("imageUrl", uploadedImage.url);
+      }
+      setUploadedImage((prev) => {
+        return { ...prev, url: "" };
+      });
+      const response = await fetch(url.toString(), {
+        method: "POST",
+      });
       if (!response.status === 200) {
         throw new Error("Network response was not ok");
       }
