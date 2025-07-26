@@ -1,5 +1,5 @@
 from fastapi import FastAPI,HTTPException
-from fastapi.responses import JSONResponse 
+from fastapi.responses import JSONResponse , StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from imagekitio import ImageKit
 import os
@@ -52,8 +52,8 @@ async def generate_text_endpoint(prompt: str,imageUrl: str = None):
             detail="Prompt cannot be empty."
         )
     try:
-        text = await generate_text(prompt, ImageUrl=imageUrl)
-        return JSONResponse({"text": text})
+        return StreamingResponse(generate_text(prompt, ImageUrl=imageUrl),media_type="text/plain")
+    
     
     except RuntimeError as e:
         raise HTTPException(

@@ -7,7 +7,7 @@ load_dotenv()
 
 client = genai.Client()
 
-async def generate_text(prompt: str,ImageUrl:str=None) -> str:
+def generate_text(prompt: str,ImageUrl:str=None) -> str:
     try:
         if ImageUrl:
             image_content = requests.get(ImageUrl).content
@@ -19,10 +19,11 @@ async def generate_text(prompt: str,ImageUrl:str=None) -> str:
             ]
         else:
             contents = [prompt]
-        response = client.models.generate_content(
+        response = client.models.generate_content_stream(
             model="gemini-2.5-flash",
             contents=contents,
         )
-        return response.text
+        for chunk in response:
+            yield chunk.text
     except Exception as e:
         raise RuntimeError(f"Failed to generate text: {str(e)}")
