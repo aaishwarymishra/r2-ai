@@ -26,8 +26,17 @@ const Input = ({ setUserInput, setModelResponse }) => {
       if (!response.status === 200) {
         throw new Error("Network response was not ok");
       }
-      const data = await response.json();
-      setModelResponse(data.text);
+
+      let result = "";
+      setModelResponse("");
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        result += decoder.decode(value, { stream: true });
+        setModelResponse(result);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
       setModelResponse("An error occurred while fetching the response.");

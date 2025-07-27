@@ -1,5 +1,8 @@
-.from-bot{
-    li,p{
-        margin: 1.25rem 0;
-    }
+.from-bot {
+  * {
+    all: revert;
+    display: revert; 
+    size: 1rem;
+  }
+
 }
