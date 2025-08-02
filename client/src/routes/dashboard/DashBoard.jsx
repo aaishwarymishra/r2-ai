@@ -1,5 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import {useAuth} from "@clerk/clerk-react"
 import logo from "/logo.png";
 import chatImg from "/chat.png";
 import imageImg from "/image.png";
@@ -7,6 +8,27 @@ import codeImg from "/code.png";
 import arrowImg from "/arrow.png";
 
 const DashBoard = () => {
+  const { userId } = useAuth();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const query = formData.get("query");
+
+    if (query) {
+      const response = await fetch("http://localhost:3000/api/new-chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          userId: userId, // Use the userId from Clerk
+          text: query, 
+         }),
+      });
+    } else {
+      console.error("Query cannot be empty");
+    }
+  };
   return (
     <div className="flex flex-col items-center justify-center h-full w-full p-4 gap-4">
       <div className="flex flex-col items-center justify-center gap-4 text-white p-6 rounded-lg shadow-lg w-[50%]">
@@ -32,12 +54,16 @@ const DashBoard = () => {
         </div>
       </div>
       <div className="flex items-center justify-center text-white p-1 rounded-2xl shadow-lg w-[50%] mt-auto bg-gray-900">
-        <form className="flex items-center p-2 justify-between w-full ">
+        <form
+          className="flex items-center p-2 justify-between w-full "
+          onSubmit={handleSubmit}
+        >
           <input
             type="text"
             className="bg-gray-900 flex-4/5 border-0 outline-0"
+            name="query"
           />
-          <button>
+          <button type="submit">
             <img
               src={arrowImg}
               alt="arrow"
