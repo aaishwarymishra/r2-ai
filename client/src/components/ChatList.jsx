@@ -1,7 +1,35 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 
 const ChatList = () => {
+  let location = useLocation();
+  const { userId, isLoaded } = useAuth();
+  const [chats, setChats] = useState([]);
+
+  useEffect(() => {
+    const fetchChats = async () => {
+      try {
+        if (!isLoaded || !userId) return;
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/api/chats/${userId}`
+        );
+        if (response.ok) {
+          let data = await response.json();
+          data = JSON.parse(data);
+          console.log("Fetched chats:", data);
+          setChats(data.chats || []);
+        } else {
+          console.error("Failed to fetch chats");
+        }
+      } catch (error) {
+        console.error("Error fetching chats:", error);
+      }
+    };
+
+    fetchChats();
+  }, [location, isLoaded]);
   return (
     <div className="flex flex-col gap-2.5 h-[100%] p-3 ">
       <Link
@@ -13,30 +41,15 @@ const ChatList = () => {
       <span className="font-bold text-[14px] p-1">Recent Chats</span>
       <hr className="text-gray-500" />
       <div className="flex flex-col  text-[14px]">
-        <Link
-          to="/dashboard/chats/1"
-          className="hover:text-blue-500 transition-colors hover:bg-gray-600 p-1 rounded"
-        >
-          Chat 1
-        </Link>
-        <Link
-          to="/dashboard/chats/2"
-          className="hover:text-blue-500 transition-colors hover:bg-gray-600 p-1 rounded"
-        >
-          Chat 2
-        </Link>
-        <Link
-          to="/dashboard/chats/3"
-          className="hover:text-blue-500 transition-colors hover:bg-gray-600 p-1 rounded"
-        >
-          Chat 3
-        </Link>
-        <Link
-          to="/dashboard/chats/4"
-          className="hover:text-blue-500 transition-colors hover:bg-gray-600 p-1 rounded"
-        >
-          Chat 4
-        </Link>
+        {chats.map((chat) => (
+          <Link
+            key={chat.chat_id["$oid"]}
+            to={`/dashboard/chats/${chat.chat_id["$oid"]}`}
+            className="hover:text-blue-500 transition-colors hover:bg-gray-600 p-1 rounded"
+          >
+            {chat.title}
+          </Link>
+        ))}
       </div>
     </div>
   );

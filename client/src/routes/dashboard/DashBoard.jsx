@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import {useAuth} from "@clerk/clerk-react"
+import { useAuth } from "@clerk/clerk-react";
 import logo from "/logo.png";
 import chatImg from "/chat.png";
 import imageImg from "/image.png";
@@ -14,17 +14,20 @@ const DashBoard = () => {
     const formData = new FormData(e.target);
     const query = formData.get("query");
 
-    if (query) {
-      const response = await fetch("http://localhost:3000/api/new-chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-          userId: userId, // Use the userId from Clerk
-          text: query, 
-         }),
-      });
+    if (query !== "" && query !== null) {
+      const response = await fetch(
+        import.meta.env.VITE_BACKEND_URL + "/api/new-chat",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userId,
+            text: query,
+          }),
+        }
+      );
     } else {
       console.error("Query cannot be empty");
     }
