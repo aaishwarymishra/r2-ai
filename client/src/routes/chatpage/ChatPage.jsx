@@ -1,14 +1,43 @@
 import React, { useEffect } from "react";
 import { useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import Input from "../../components/Input";
 import MarkDown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import "./ChatPage.css";
+import { IKImage } from "imagekitio-react";
 
 const ChatPage = () => {
   const [userInput, setUserInput] = useState("");
   const [modelResponse, setModelResponse] = useState("");
+  // State to hold chat data
+  const [chatData, setChatData] = useState([]);
+  // Reference to the div to scroll to the bottom
   const scrollToBottomDiv = useRef(null);
+  // Get path Id for the chat
+  const { id } = useParams();
+  useEffect(() => {
+    // Fetch chat data based on the id from the URL
+    const fetchChatData = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/api/chat/${id}`
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        let data = await response.json();
+        // Assuming data contains the chat messages
+        data = JSON.parse(data);
+        setChatData(data || []);
+      } catch (error) {
+        console.error("Error fetching chat data:", error);
+      }
+    };
+
+    fetchChatData();
+  }, [id]);
+  // Scroll to the bottom when userInput or modelResponse changes
   useEffect(() => {
     if (scrollToBottomDiv.current) {
       scrollToBottomDiv.current.scrollIntoView({ behavior: "smooth" });
@@ -17,52 +46,42 @@ const ChatPage = () => {
     }
   }, [userInput, modelResponse]);
 
+  function displayChatMessages(messages) {
+    const chatClasses = {
+      user: "from-user max-w-[70%] p-2.5 rounded-2xl bg-gray-800 self-end",
+      model: "from-bot max-w-[100%] p-2.5 rounded-2xl bg-gray-800 self-start",
+    };
+    return messages.map((message, index) => {
+      return (
+        <>
+          {message.parts[0].img && (
+            <IKImage
+              urlEndpoint={import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}
+              src={message.parts[0].img}
+              width="150"
+              height="150"
+              alt="Uploaded image"
+              className="rounded-lg mb-2"
+            />
+          )}
+          <div
+            ref={index === messages.length - 1 ? scrollToBottomDiv : null}
+            key={index}
+            className={chatClasses[message.role]}
+          >
+            {message.parts[0].text}
+          </div>
+        </>
+      );
+      return null;
+    });
+  }
+
   return (
     <div className="flex flex-col h-full w-full overflow-hidden p-0.5">
       <div className="flex-1 overflow-y-auto p-6 min-h-0">
         <div className="flex flex-col gap-4 max-w-[75%] mx-auto text-white text-[1rem]">
-          <div className="from-user max-w-[70%] p-2.5 rounded-2xl bg-gray-800 self-end">
-            Hi
-          </div>
-          <div className="from-bot max-w-[100%] p-2.5 rounded-2xl bg-gray-800 self-start">
-            Hello! How can I assist you today?
-          </div>
-          <div className="from-user max-w-[70%] p-2.5 rounded-2xl bg-gray-800 self-end">
-            Can you help me with a React component?
-          </div>
-          <div className="from-bot max-w-[100%] p-2.5 rounded-2xl bg-gray-800 self-start">
-            Of course! I'd be happy to help you with React components. What
-            specific aspect would you like assistance with?
-          </div>
-          <div className="from-user max-w-[70%] p-2.5 rounded-2xl bg-gray-800 self-end">
-            How do I handle state in functional components?
-          </div>
-          <div className="from-bot max-w-[100%] p-2.5 rounded-2xl bg-gray-800 self-start">
-            You can use the useState hook for managing state in functional
-            components. Here's a simple example: const [count, setCount] =
-            useState(0);
-          </div>
-          <div className="from-user max-w-[70%] p-2.5 rounded-2xl bg-gray-800 self-end">
-            That's helpful, thank you!
-          </div>
-          <div className="from-bot max-w-[100%] p-2.5 rounded-2xl bg-gray-800 self-start">
-            You're welcome! Feel free to ask if you have any more questions
-            about React or anything else.
-          </div>
-          <div className="from-user max-w-[70%] p-2.5 rounded-2xl bg-gray-800 self-end">
-            I will. Thanks again!
-          </div>
-          {userInput && (
-            <div className="from-user max-w-[70%] p-2.5 rounded-2xl bg-gray-800 self-end">
-              {userInput}
-            </div>
-          )}
-          <div ref={scrollToBottomDiv}></div>
-          {modelResponse && (
-            <div className="from-bot max-w-[100%] p-2.5 rounded-2xl self-start bg-transparent">
-              <MarkDown remarkPlugins={remarkGfm}>{modelResponse}</MarkDown>
-            </div>
-          )}
+          {displayChatMessages(chatData.history || [])}
         </div>
       </div>
       <Input

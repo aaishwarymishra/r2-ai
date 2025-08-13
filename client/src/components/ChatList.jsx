@@ -17,8 +17,8 @@ const ChatList = () => {
         );
         if (response.ok) {
           let data = await response.json();
+          // Parse the data it's a string
           data = JSON.parse(data);
-          console.log("Fetched chats:", data);
           setChats(data.chats || []);
         } else {
           console.error("Failed to fetch chats");
@@ -30,6 +30,11 @@ const ChatList = () => {
 
     fetchChats();
   }, [location, isLoaded]);
+
+  const handleChatClick = (chatId) => {
+    console.log(`Chat clicked: ${chatId}`);
+  }
+
   return (
     <div className="flex flex-col gap-2.5 h-[100%] p-3 ">
       <Link

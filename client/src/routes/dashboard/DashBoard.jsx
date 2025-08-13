@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet,useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 import logo from "/logo.png";
 import chatImg from "/chat.png";
@@ -9,6 +9,7 @@ import arrowImg from "/arrow.png";
 
 const DashBoard = () => {
   const { userId } = useAuth();
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -28,6 +29,12 @@ const DashBoard = () => {
           }),
         }
       );
+      if (response.ok) {
+        const data = await response.json();
+        navigate(`/dashboard/chats/${data.chatId}`);
+      } else {
+        console.error("Failed to create new chat");
+      }
     } else {
       console.error("Query cannot be empty");
     }

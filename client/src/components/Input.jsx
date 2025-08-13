@@ -12,7 +12,7 @@ const Input = ({ setUserInput, setModelResponse }) => {
     }
     setUserInput(text);
     try {
-      const url = new URL("http://localhost:3000/api/generate-text");
+      const url = new URL(import.meta.env.VITE_BACKEND_URL+"/api/generate-text");
       url.searchParams.append("prompt", text);
       if (uploadedImage.url) {
         url.searchParams.append("imageUrl", uploadedImage.url);
