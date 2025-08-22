@@ -17,9 +17,13 @@ const ChatList = () => {
         );
         if (response.ok) {
           let data = await response.json();
-          // Parse the data it's a string
-          data = JSON.parse(data);
-          setChats(data.chats || []);
+          // Backend may return a JSON string; normalize
+          if (typeof data === "string") {
+            try {
+              data = JSON.parse(data);
+            } catch {}
+          }
+          setChats(data?.chats || []);
         } else {
           console.error("Failed to fetch chats");
         }
@@ -33,7 +37,7 @@ const ChatList = () => {
 
   const handleChatClick = (chatId) => {
     console.log(`Chat clicked: ${chatId}`);
-  }
+  };
 
   return (
     <div className="flex flex-col gap-2.5 h-[100%] p-3 ">
@@ -48,8 +52,10 @@ const ChatList = () => {
       <div className="flex flex-col  text-[14px]">
         {chats.map((chat) => (
           <Link
-            key={chat.chat_id["$oid"]}
-            to={`/dashboard/chats/${chat.chat_id["$oid"]}`}
+            key={chat.chat_id && (chat.chat_id.$oid || chat.chat_id)}
+            to={`/dashboard/chats/${
+              chat.chat_id && (chat.chat_id.$oid || chat.chat_id)
+            }`}
             className="hover:text-blue-500 transition-colors hover:bg-gray-600 p-1 rounded"
           >
             {chat.title}

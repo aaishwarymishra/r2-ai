@@ -7,7 +7,9 @@ const urlEndpoint = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
 
 const authenticator = async () => {
   try {
-    const response = await fetch("http://localhost:3000/api/upload");
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/api/upload`
+    );
     if (!response.ok) {
       throw new Error(
         "Request failed with " + response.status + " : " + response.statusText

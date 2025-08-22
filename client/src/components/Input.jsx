@@ -3,7 +3,7 @@ import { IKImage } from "imagekitio-react";
 import arrow from "/arrow.png";
 import Upload from "./Upload";
 
-const Input = ({ setUserInput, setModelResponse }) => {
+const Input = ({ setUserInput, setModelResponse, chatId }) => {
   async function handleInputChange(e) {
     e.preventDefault();
     const text = e.target.input.value;
@@ -12,10 +12,15 @@ const Input = ({ setUserInput, setModelResponse }) => {
     }
     setUserInput(text);
     try {
-      const url = new URL(import.meta.env.VITE_BACKEND_URL+"/api/generate-text");
+      const url = new URL(
+        import.meta.env.VITE_BACKEND_URL + "/api/generate-text"
+      );
       url.searchParams.append("prompt", text);
       if (uploadedImage.url) {
         url.searchParams.append("imageUrl", uploadedImage.url);
+      }
+      if (chatId) {
+        url.searchParams.append("chatId", chatId);
       }
       setUploadedImage((prev) => {
         return { ...prev, url: "" };
@@ -23,7 +28,7 @@ const Input = ({ setUserInput, setModelResponse }) => {
       const response = await fetch(url.toString(), {
         method: "POST",
       });
-      if (!response.status === 200) {
+      if (response.status !== 200) {
         throw new Error("Network response was not ok");
       }
 
@@ -37,6 +42,8 @@ const Input = ({ setUserInput, setModelResponse }) => {
         result += decoder.decode(value, { stream: true });
         setModelResponse(result);
       }
+      // Clear input after successful send
+      e.target.reset();
     } catch (error) {
       console.error("Error fetching data:", error);
       setModelResponse("An error occurred while fetching the response.");

@@ -10,7 +10,7 @@ const NavBar = () => {
         <nav>
           <Link to="/" className="flex items-center gap-2 text-1xl font-bold">
             <img src={logo} alt="Logo" className="w-5 h-5" />
-            <span>Lama AI</span>
+            <span>R2 AI</span>
           </Link>
         </nav>
         <SignedIn>

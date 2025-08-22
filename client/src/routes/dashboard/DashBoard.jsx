@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet,useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 import logo from "/logo.png";
 import chatImg from "/chat.png";
@@ -31,7 +31,10 @@ const DashBoard = () => {
       );
       if (response.ok) {
         const data = await response.json();
-        navigate(`/dashboard/chats/${data.chatId}`);
+        // Ensure chatId is a string
+        const chatId =
+          typeof data.chatId === "string" ? data.chatId : data.chatId?.$oid;
+        navigate(`/dashboard/chats/${chatId}`);
       } else {
         console.error("Failed to create new chat");
       }
