@@ -2,7 +2,7 @@ from datetime import datetime
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
-from . import schema
+import schema
 import os
 
 load_dotenv()

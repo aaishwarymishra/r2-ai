@@ -3,14 +3,15 @@ import { IKImage } from "imagekitio-react";
 import arrow from "/arrow.png";
 import Upload from "./Upload";
 
-const Input = ({ setUserInput, setModelResponse, chatId }) => {
+const Input = ({ setChatData, setModelResponse, chatId }) => {
   async function handleInputChange(e) {
     e.preventDefault();
     const text = e.target.input.value;
+    e.target.reset();
     if (!text) {
       return;
     }
-    setUserInput(text);
+    let input = {role:"user", parts: [{ text }]};
     try {
       const url = new URL(
         import.meta.env.VITE_BACKEND_URL + "/api/generate-text"
@@ -18,10 +19,15 @@ const Input = ({ setUserInput, setModelResponse, chatId }) => {
       url.searchParams.append("prompt", text);
       if (uploadedImage.url) {
         url.searchParams.append("imageUrl", uploadedImage.url);
+        input.parts.push({ img: uploadedImage.url });
       }
       if (chatId) {
         url.searchParams.append("chatId", chatId);
       }
+
+      setChatData((prev) => [...prev, input]);
+      setModelResponse("Loading...");
+
       setUploadedImage((prev) => {
         return { ...prev, url: "" };
       });
@@ -42,8 +48,8 @@ const Input = ({ setUserInput, setModelResponse, chatId }) => {
         result += decoder.decode(value, { stream: true });
         setModelResponse(result);
       }
-      // Clear input after successful send
-      e.target.reset();
+      setModelResponse("");
+      setChatData((prev) => [...prev, { role: "model", parts: [{ text: result }] }]);
     } catch (error) {
       console.error("Error fetching data:", error);
       setModelResponse("An error occurred while fetching the response.");

@@ -8,7 +8,6 @@ import "./ChatPage.css";
 import { IKImage } from "imagekitio-react";
 
 const ChatPage = () => {
-  const [userInput, setUserInput] = useState("");
   const [modelResponse, setModelResponse] = useState("");
   // State to hold chat data
   const [chatData, setChatData] = useState([]);
@@ -33,7 +32,7 @@ const ChatPage = () => {
             data = JSON.parse(data);
           } catch {}
         }
-        setChatData(data || []);
+        setChatData(data.history || []);
       } catch (error) {
         console.error("Error fetching chat data:", error);
       }
@@ -45,10 +44,8 @@ const ChatPage = () => {
   useEffect(() => {
     if (scrollToBottomDiv.current) {
       scrollToBottomDiv.current.scrollIntoView({ behavior: "smooth" });
-
-      // Append a temporary model message or update the last one
     }
-  }, [userInput, modelResponse]);
+  }, [chatData, modelResponse]);
 
   function displayChatMessages(messages) {
     const chatClasses = {
@@ -57,27 +54,28 @@ const ChatPage = () => {
     };
     return messages.map((message, index) => {
       return (
-        <>
-          {message.parts[0].img && (
+        <React.Fragment key={index}>
+          {message.parts?.[1]?.img && (
             <IKImage
               urlEndpoint={import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}
-              src={message.parts[0].img}
+              src={message.parts[1].img}
               width="150"
               height="150"
               alt="Uploaded image"
-              className="rounded-lg mb-2"
+              className="rounded-lg mb-2 self-end"
             />
           )}
-          <div
-            ref={index === messages.length - 1 ? scrollToBottomDiv : null}
-            key={index}
-            className={chatClasses[message.role]}
-          >
-            {message.parts[0].text}
+          <div className={chatClasses[message.role]}>
+            {message.role === "model" ? (
+              <MarkDown remarkPlugins={[remarkGfm]}>
+                {message.parts?.[0]?.text || ""}
+              </MarkDown>
+            ) : (
+              message.parts?.[0]?.text || ""
+            )}
           </div>
-        </>
+        </React.Fragment>
       );
-      return null;
     });
   }
 
@@ -85,10 +83,10 @@ const ChatPage = () => {
     <div className="flex flex-col h-full w-full overflow-hidden p-0.5">
       <div className="flex-1 overflow-y-auto p-6 min-h-0">
         <div className="flex flex-col gap-4 max-w-[75%] mx-auto text-white text-[1rem]">
-          {displayChatMessages(chatData.history || [])}
+          {displayChatMessages(chatData || [])}
+          <div ref={scrollToBottomDiv} />
           {modelResponse && (
             <div
-              ref={scrollToBottomDiv}
               className={
                 "from-bot max-w-[100%] p-2.5 rounded-2xl bg-gray-800 self-start"
               }
@@ -100,7 +98,7 @@ const ChatPage = () => {
       </div>
       <Input
         setModelResponse={setModelResponse}
-        setUserInput={setUserInput}
+        setChatData={setChatData}
         chatId={id}
       ></Input>
     </div>

@@ -4,8 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from imagekitio import ImageKit
 import os
 from dotenv import load_dotenv
-from .gemini import generate_text
-from .db import (
+from gemini import generate_text
+from db import (
     connect_to_mongo,
     check_db,
     insert_user_chat,
@@ -73,7 +73,6 @@ async def generate_text_endpoint(prompt: str, imageUrl: str | None = None, chatI
             detail="Prompt cannot be empty."
         )
     try:
-        # Wrap the generator to optionally persist to DB after completion
         def stream_and_persist():
             accumulated = ""
             try:
@@ -82,7 +81,6 @@ async def generate_text_endpoint(prompt: str, imageUrl: str | None = None, chatI
                     accumulated += text_piece
                     yield text_piece
             finally:
-                # Persist messages if chatId provided and DB is available
                 try:
                     if chatId and mongo_client and accumulated:
                         # Build user and model messages
