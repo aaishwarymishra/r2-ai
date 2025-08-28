@@ -100,6 +100,7 @@ const ChatPage = () => {
         setModelResponse={setModelResponse}
         setChatData={setChatData}
         chatId={id}
+        chatData={chatData}
       ></Input>
     </div>
   );

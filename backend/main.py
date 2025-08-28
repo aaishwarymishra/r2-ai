@@ -5,6 +5,7 @@ from imagekitio import ImageKit
 import os
 from dotenv import load_dotenv
 from gemini import generate_text
+import requests
 from db import (
     connect_to_mongo,
     check_db,
@@ -73,10 +74,12 @@ async def generate_text_endpoint(prompt: str, imageUrl: str | None = None, chatI
             detail="Prompt cannot be empty."
         )
     try:
+        doc = find_chat(mongo_client, chatId) if chatId and mongo_client else None
+        history = doc.get("history", []) if doc else []
         def stream_and_persist():
             accumulated = ""
             try:
-                for chunk in generate_text(prompt, ImageUrl=imageUrl):
+                for chunk in generate_text(history, prompt, imageUrl):
                     text_piece = chunk
                     accumulated += text_piece
                     yield text_piece

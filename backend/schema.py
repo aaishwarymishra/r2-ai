@@ -29,14 +29,14 @@ chats = {
                             "description": "must be an array and is required",
                             "items": {
                                 "bsonType": "object",
-                                "required": ["text"],
                                 "properties": {
                                     "text": {
                                         "bsonType": "string",
                                         "description": "must be a string and is required"
                                     },
-                                    "img":{
+                                    "img": {
                                         "bsonType": "string",
+                                        "description": "must be a string"
                                     }
                                 }    
                             }
