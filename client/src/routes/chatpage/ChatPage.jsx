@@ -15,6 +15,8 @@ const ChatPage = () => {
   const scrollToBottomDiv = useRef(null);
   // Get path Id for the chat
   const { id } = useParams();
+
+  const [initialQuery, setInitialQuery] = useState("");
   useEffect(() => {
     // Fetch chat data based on the id from the URL
     const fetchChatData = async () => {
@@ -33,6 +35,9 @@ const ChatPage = () => {
           } catch {}
         }
         setChatData(data.history || []);
+        if (data.history && data.history.length === 1) {
+          setInitialQuery(data.history[0].parts[0].text || "");
+        }
       } catch (error) {
         console.error("Error fetching chat data:", error);
       }
@@ -100,7 +105,8 @@ const ChatPage = () => {
         setModelResponse={setModelResponse}
         setChatData={setChatData}
         chatId={id}
-        chatData={chatData}
+        initialQuery={initialQuery}
+        setInitialQuery={setInitialQuery}
       ></Input>
     </div>
   );

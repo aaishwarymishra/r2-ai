@@ -3,7 +3,13 @@ import { IKImage } from "imagekitio-react";
 import arrow from "/arrow.png";
 import Upload from "./Upload";
 
-const Input = ({ setChatData, setModelResponse, chatId, chatData }) => {
+const Input = ({
+  setChatData,
+  setModelResponse,
+  chatId,
+  initialQuery,
+  setInitialQuery,
+}) => {
   async function handleInputChange(e) {
     e.preventDefault();
     const text = e.target.input.value;
@@ -39,7 +45,6 @@ const Input = ({ setChatData, setModelResponse, chatId, chatData }) => {
       }
 
       let result = "";
-      setModelResponse("");
       const reader = response.body.getReader();
       const decoder = new TextDecoder("utf-8");
       while (true) {
@@ -60,23 +65,16 @@ const Input = ({ setChatData, setModelResponse, chatId, chatData }) => {
   }
 
   useEffect(() => {
-    async function handleIntialQuery() {
+    async function handleInitialQuery() {
       try {
-        if (chatData.length === 1) {
-          const initialQuery = chatData[0].parts[0].text;
+        if (initialQuery && initialQuery.trim() !== "") {
           let input = { role: "user", parts: [{ text: initialQuery }] };
-          if (chatData[0].parts[1]?.img) {
-            input.parts.push({ img: chatData[0].parts[1].img });
-          }
           setModelResponse("Loading...");
-          setChatData([input]);
           const url = new URL(
             import.meta.env.VITE_BACKEND_URL + "/api/generate-text"
           );
           url.searchParams.append("prompt", initialQuery);
-          if (chatData[0].parts[1]?.img) {
-            url.searchParams.append("imageUrl", chatData[0].parts[1].img);
-          }
+
           if (chatId) {
             url.searchParams.append("chatId", chatId);
           }
@@ -88,7 +86,6 @@ const Input = ({ setChatData, setModelResponse, chatId, chatData }) => {
           }
 
           let result = "";
-          setModelResponse("");
           const reader = response.body.getReader();
           const decoder = new TextDecoder("utf-8");
           while (true) {
@@ -102,13 +99,15 @@ const Input = ({ setChatData, setModelResponse, chatId, chatData }) => {
             ...prev,
             { role: "model", parts: [{ text: result }] },
           ]);
+
+          setInitialQuery("");
         }
       } catch (error) {
         console.error("Error updating chat data:", error);
       }
     }
-    handleIntialQuery();
-  }, []);
+    handleInitialQuery();
+  }, [initialQuery]);
 
   const [uploadedImage, setUploadedImage] = useState({
     url: "",
