@@ -19,11 +19,10 @@ const HomePage = () => {
         <h2 className="text-2xl font-bold">
           A friendly chatbot that helps you
         </h2>
-        <h3 className="text-1xl max-w-[75%]">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Natus ea
-          quisquam ipsa blanditiis provident tenetur tempora neque nesciunt?
-          Magnam ex mollitia autem quam esse earum eligendi corrupti possimus
-          odio sequi?
+        <h3 className="text-1xl max-w-[75%] text-center">
+          Experience the future of AI-powered conversations with R2 AI, your
+          intelligent and friendly chatbot designed to assist you with a wide
+          range of tasks.
         </h3>
         <Link
           to="/dashboard"
@@ -37,7 +36,7 @@ const HomePage = () => {
           <img
             src={bot}
             alt="bot-img"
-            className="object-contain animate-[bounce_2s_infinite] "
+            className="object-contain animate-[bounce_2s_infinite]"
           />
         </div>
       </div>

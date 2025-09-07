@@ -9,7 +9,7 @@ const NavBar = () => {
       <header className="flex items-center justify-between border-b border-gray-700 p-3 ">
         <nav>
           <Link to="/" className="flex items-center gap-2 text-1xl font-bold">
-            <img src={logo} alt="Logo" className="w-5 h-5" />
+            <img src={logo} alt="Logo" className="w-15" />
             <span>R2 AI</span>
           </Link>
         </nav>
