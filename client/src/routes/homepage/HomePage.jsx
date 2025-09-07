@@ -5,6 +5,10 @@ import "./homepage.css";
 import bot from "/bot.png";
 
 const HomePage = () => {
+  const response = fetch(`${import.meta.env.VITE_BACKEND_URL}/api/ping`)
+    .then((res) => res.json())
+    .then((data) => console.log(data));
+  console.log(response);
   return (
     <div className="flex items-center justify-between gap-20 bg-transparent h-full p-4 ">
       <img

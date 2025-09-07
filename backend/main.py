@@ -27,7 +27,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=[os.getenv("FRONTEND_URL", "http://localhost:3000")],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,6 +46,11 @@ try:
     check_db(mongo_client)
 except Exception as e:
     print(f"[Startup] Mongo initialization failed: {e}")
+
+
+@app.get("/api/ping")
+async def ping():
+    return JSONResponse({"message": "pong"})
 
 
 @app.get("/api/upload")
